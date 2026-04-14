@@ -1,4 +1,4 @@
-<!-- Last scan: 2026-04-13T00:30:00Z by codebase-mirror -->
+<!-- Last scan: 2026-04-14T18:30:00Z by codebase-mirror -->
 
 # AEE (Agent Envelope Exchange) — Codebase Map
 
@@ -18,6 +18,7 @@ Minimal envelope format for agent-to-agent communication with human-in-the-loop.
 
 | Metric | Count |
 |--------|-------|
+| Documentation Files | 6 |
 | Schema Files | 1 |
 | Envelope Fields | 14 (10 required, 4 optional) |
 | Envelope Types | 5 |
@@ -43,7 +44,7 @@ aee/
 ├── examples/
 │   └── handshake.md                    # Capability discovery examples
 └── .github/
-    ├── CODEOWNERS                      # Code ownership
+    ├── CODEOWNERS                      # Code ownership (@quoxai)
     ├── pull_request_template.md        # PR template
     └── ISSUE_TEMPLATE/
         ├── bug.md                      # Bug report template
