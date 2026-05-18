@@ -1,7 +1,7 @@
 # AEE — Codebase Map
 
-<!-- Last scan: 2026-05-14 -->
-> Verified: 2026-05-14 — re-scanned, structure confirmed accurate
+<!-- Last scan: 2026-05-18 -->
+> Regenerated: 2026-05-18 — full mirror scan
 
 **Agent Envelope Exchange (AEE)** — A 14-field JSON envelope format for agent-to-agent communication with explicit causality.
 
