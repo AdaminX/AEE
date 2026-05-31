@@ -1,7 +1,6 @@
 # AEE — Codebase Map
 
-<!-- Last scan: 2026-05-18 -->
-> Regenerated: 2026-05-18 — full mirror scan
+<!-- Last regenerated: 2026-05-31 03:21 UTC by Claude Code -->
 
 **Agent Envelope Exchange (AEE)** — A 14-field JSON envelope format for agent-to-agent communication with explicit causality.
 
@@ -37,7 +36,7 @@ aee/
 ├── examples/
 │   └── handshake.md                  # Capability discovery (aee.capability.list, aee.spec.query)
 └── .github/
-    ├── CODEOWNERS                    # Default reviewers (@quoxai)
+    ├── CODEOWNERS
     ├── pull_request_template.md
     └── ISSUE_TEMPLATE/
         ├── bug.md
@@ -205,7 +204,7 @@ The envelope schema (`aee-v1.schema.json`) is embedded in `aee.md` Section 6. Ke
 |------|------|
 | First envelope | `quickstart.md` |
 | Full spec | `aee.md` |
-| Payload schemas | `intents.md` |
+| Intent schemas | `intents.md` |
 | Machine-readable | `AI_README.json` |
 | Capability discovery | `examples/handshake.md` |
 | Protocol positioning | `relationship-to-mcp-acp.md` |
