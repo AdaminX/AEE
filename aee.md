@@ -463,7 +463,7 @@ Decision evidence lives in `payload.decision_evidence`:
       "inputs_used": ["backup-store-01 job log", "backup-host-01 health check"],
       "tools_used": ["ssh.exec", "pbs.job.list"],
       "decision": "Classified as PARTIAL_FAILURE due to 1/3 nodes unreachable",
-      "reason_summary": "backup-host-01 refused connection on port 8443. pve01 and pve03 completed successfully. Threshold for FAILURE is 2+ nodes.",
+      "reason_summary": "backup-host-01 refused connection on port 8443. compute-host-01 and compute-host-03 completed successfully. Threshold for FAILURE is 2+ nodes.",
       "action_taken": "Returned status with failed node details for operator review",
       "confidence": 0.92
     }
