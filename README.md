@@ -282,6 +282,15 @@ The envelope stays stable. The **meaning** comes from intent-specific schemas pu
 - **[intents.md](intents.md)** — Starter intent registry with example schemas
 - **[relationship-to-mcp-acp.md](relationship-to-mcp-acp.md)** — How AEE relates to MCP and ACP
 
+## Reference SDK
+
+A conformant reference implementation exists in two languages, developed together in one repo:
+
+- **`@quox/aee-sdk`** (TypeScript / Node) and **`quox-aee`** (Python 3.10+), at **github.com/quoxai/aee-sdk**.
+- Zero-dependency envelope create/validate, decision-evidence capture (spec section 13.2), local sinks, and an `aee-validate` CLI. Both packages prove conformance against a shared fixture corpus plus a vendored copy of this repo's `aee-v1.schema.json`.
+
+The SDK repo is private today and **opening at launch**, together with the npm and PyPI publishes. Until then the reference above is a name, not a live link.
+
 ## Roadmap
 
 See [GitHub Issues](https://github.com/quoxai/aee/issues) for planned work:
