@@ -167,9 +167,9 @@ The key words "MUST", "MUST NOT", "SHOULD", "SHOULD NOT", and "MAY" in this docu
   "requires": {"evidence": true},
   "payload": {
     "status": "PARTIAL_FAILURE",
-    "failed": [{"node": "pve02", "reason": "connection_refused:8007"}],
+    "failed": [{"node": "backup-host-01", "reason": "connection_refused:8443"}],
     "confidence": 0.96,
-    "evidence_refs": ["log:pbs01:job/2025-12-14T02:00Z"]
+    "evidence_refs": ["log:backup-store-01:job/2025-12-14T02:00Z"]
   },
   "sig": null
 }
@@ -196,7 +196,7 @@ The key words "MUST", "MUST NOT", "SHOULD", "SHOULD NOT", and "MAY" in this docu
     "message": "PBS API did not respond within 30s",
     "retryable": true,
     "backoff_ms": 60000,
-    "evidence_refs": ["tcp:pve02->pbs01:8007"]
+    "evidence_refs": ["tcp:backup-host-01->backup-store-01:8443"]
   },
   "sig": null
 }
@@ -458,12 +458,12 @@ Decision evidence lives in `payload.decision_evidence`:
   "requires": {"decision_evidence": "standard"},
   "payload": {
     "status": "PARTIAL_FAILURE",
-    "failed": [{"node": "pve02", "reason": "connection_refused:8007"}],
+    "failed": [{"node": "backup-host-01", "reason": "connection_refused:8443"}],
     "decision_evidence": {
-      "inputs_used": ["pbs01 job log", "pve02 health check"],
+      "inputs_used": ["backup-store-01 job log", "backup-host-01 health check"],
       "tools_used": ["ssh.exec", "pbs.job.list"],
       "decision": "Classified as PARTIAL_FAILURE due to 1/3 nodes unreachable",
-      "reason_summary": "pve02 refused connection on port 8007. pve01 and pve03 completed successfully. Threshold for FAILURE is 2+ nodes.",
+      "reason_summary": "backup-host-01 refused connection on port 8443. pve01 and pve03 completed successfully. Threshold for FAILURE is 2+ nodes.",
       "action_taken": "Returned status with failed node details for operator review",
       "confidence": 0.92
     }

@@ -268,9 +268,9 @@ The envelope stays stable. The **meaning** comes from intent-specific schemas pu
   "requires": {"evidence": true},
   "payload": {
     "status": "PARTIAL_FAILURE",
-    "failed": [{"node": "pve02", "reason": "connection_refused:8007"}],
+    "failed": [{"node": "backup-host-01", "reason": "connection_refused:8443"}],
     "confidence": 0.96,
-    "evidence_refs": ["log:pbs01:job/2025-12-14T02:00Z"]
+    "evidence_refs": ["log:backup-store-01:job/2025-12-14T02:00Z"]
   },
   "sig": null
 }
