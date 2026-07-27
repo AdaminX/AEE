@@ -1,8 +1,8 @@
-<!-- Regenerated: 2026-07-27T03:30Z by codebase-mirror scan (verified) -->
+<!-- Regenerated: 2026-07-27T15:30Z by codebase-mirror scan (verified) -->
 
 # AEE — Codebase Map
 
-**Agent Envelope Exchange (AEE)** — A 14-field JSON envelope format for agent-to-agent communication with explicit causality. Standardizes the *envelope*, not the agent. Part of the Quox protocol family (AEE, AOCL, VOLT, WARD). Specification only — no runtime/validator code.
+**Agent Envelope Exchange (AEE)** — A 14-field JSON envelope format for agent-to-agent communication with explicit causality. Standardizes the *envelope*, not the agent. Part of the Quox protocol family (AEE, AOCL, VOLT, WARD). Specification only, no runtime/validator code.
 
 ## Metrics
 | Metric | Value |
@@ -11,7 +11,6 @@
 | Schema files | 2 |
 | Example files | 1 |
 | Spec docs (Markdown) | 8 |
-| Total lines (spec files) | ~1,989 |
 | IETF Draft | `draft-cowles-aee-00` |
 | License | MIT |
 | Status | Experimental — Open for Feedback |
@@ -20,17 +19,17 @@
 
 ```
 aee/
-├── README.md                  # Overview, examples, quick reference (334 lines)
-├── aee.md                     # Full specification (489 lines)
-├── intents.md                 # Intent registry + payload schemas (501 lines)
-├── quickstart.md              # 5-minute getting started guide (115 lines)
-├── relationship-to-mcp-acp.md # Protocol layer comparison (82 lines)
-├── AI_README.json             # Self-describing AEE envelope for AI agents (220 lines)
-├── CHANGELOG.md               # Version history (36 lines)
-├── LICENSE                    # Apache 2.0
+├── README.md                  # Overview, examples, quick reference (335 lines)
+├── aee.md                     # Full specification (490 lines)
+├── intents.md                 # Intent registry + payload schemas (502 lines)
+├── quickstart.md              # 5-minute getting started guide (116 lines)
+├── relationship-to-mcp-acp.md # Protocol layer comparison (83 lines)
+├── AI_README.json             # Self-describing AEE envelope for AI agents (221 lines)
+├── CHANGELOG.md               # Version history (37 lines)
+├── LICENSE                    # MIT license
 ├── CODEBASE_MAP.md            # This file
 ├── examples/
-│   └── handshake.md           # Capability discovery examples (132 lines)
+│   └── handshake.md           # Capability discovery examples (133 lines)
 ├── schemas/
 │   ├── aee-v1.schema.json            # Canonical envelope JSON Schema (37 lines)
 │   └── decision-evidence.schema.json # Decision evidence fragment schema (43 lines)
