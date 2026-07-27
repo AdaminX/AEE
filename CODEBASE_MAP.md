@@ -1,106 +1,99 @@
+<!-- Regenerated: 2026-07-27T03:30Z by codebase-mirror scan (verified) -->
+
 # AEE — Codebase Map
 
-<!-- Last regenerated: 2026-05-31 03:21 UTC by Claude Code -->
+**Agent Envelope Exchange (AEE)** — A 14-field JSON envelope format for agent-to-agent communication with explicit causality. Standardizes the *envelope*, not the agent. Part of the Quox protocol family (AEE, AOCL, VOLT, WARD). Specification only — no runtime/validator code.
 
-**Agent Envelope Exchange (AEE)** — A 14-field JSON envelope format for agent-to-agent communication with explicit causality.
+## Metrics
+| Metric | Value |
+|--------|-------|
+| Protocol Version | **1** |
+| Schema files | 2 |
+| Example files | 1 |
+| Spec docs (Markdown) | 8 |
+| Total lines (spec files) | ~1,989 |
+| IETF Draft | `draft-cowles-aee-00` |
+| License | MIT |
+| Status | Experimental — Open for Feedback |
 
-## Protocol Summary
-
-| Property | Value |
-|----------|-------|
-| **Version** | 1 |
-| **License** | MIT |
-| **Status** | Experimental — Open for Feedback |
-| **IETF Draft** | [`draft-cowles-aee-00`](https://datatracker.ietf.org/doc/draft-cowles-aee/) |
-
-**Core purpose:** Standardize the *envelope*, not the agent. Fixed structure, explicit causality, portable across frameworks (LangGraph, AutoGen, CrewAI, etc.).
-
-**What AEE is NOT:** Not orchestration, not a runtime, not a framework, not a transport — just structure.
-
-## File Structure
+## Directory Structure
 
 ```
 aee/
-├── README.md                         # Protocol overview, quick examples, why AEE exists
-├── aee.md                            # Full specification (14 fields, validity rules, JSON Schema)
-├── intents.md                        # Intent registry (aee.*, aee.ext.*, ops.*, docs.*)
-├── quickstart.md                     # First envelope in 5 minutes (copy-paste ready)
-├── relationship-to-mcp-acp.md        # How AEE relates to MCP and ACP, middleware adoption
-├── AI_README.json                    # Machine-readable spec (valid AEE envelope itself)
-├── CHANGELOG.md                      # Version history
-├── LICENSE                           # MIT license
-├── CODEBASE_MAP.md                   # This file
-├── .gitignore
-├── schemas/
-│   └── decision-evidence.schema.json # JSON Schema for decision evidence (Section 13)
+├── README.md                  # Overview, examples, quick reference (334 lines)
+├── aee.md                     # Full specification (489 lines)
+├── intents.md                 # Intent registry + payload schemas (501 lines)
+├── quickstart.md              # 5-minute getting started guide (115 lines)
+├── relationship-to-mcp-acp.md # Protocol layer comparison (82 lines)
+├── AI_README.json             # Self-describing AEE envelope for AI agents (220 lines)
+├── CHANGELOG.md               # Version history (36 lines)
+├── LICENSE                    # Apache 2.0
+├── CODEBASE_MAP.md            # This file
 ├── examples/
-│   └── handshake.md                  # Capability discovery (aee.capability.list, aee.spec.query)
+│   └── handshake.md           # Capability discovery examples (132 lines)
+├── schemas/
+│   ├── aee-v1.schema.json            # Canonical envelope JSON Schema (37 lines)
+│   └── decision-evidence.schema.json # Decision evidence fragment schema (43 lines)
 └── .github/
-    ├── CODEOWNERS
+    ├── CODEOWNERS             # @quoxai
     ├── pull_request_template.md
     └── ISSUE_TEMPLATE/
-        ├── bug.md
-        └── feature.md
+        ├── feature.md
+        └── bug.md
 ```
 
-## Envelope Fields (14 total)
+## Authoritative Files
+| File | Purpose |
+|------|---------|
+| `aee.md` | Full normative spec (14 fields, validity rules, JSON Schema inline in §6) |
+| `schemas/aee-v1.schema.json` | Canonical machine-readable envelope schema (extracted from §6) |
+| `intents.md` | Intent registry (`aee.*`, `aee.ext.*`, `ops.*`, `docs.*`) |
+| `AI_README.json` | Machine-readable spec (itself a valid AEE envelope) |
+| `schemas/decision-evidence.schema.json` | JSON Schema for decision evidence (§13) |
+| `examples/handshake.md` | Capability discovery example |
+| `quickstart.md` | Emit your first envelope in 5 minutes |
+| `relationship-to-mcp-acp.md` | Protocol layer comparison (MCP, ACP, AEE) |
 
-### Required (10)
+## Envelope Fields (14)
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `v` | string | Protocol version (`"1"`) |
-| `id` | string | Unique envelope ID (ULID/UUID) |
-| `ts` | string | ISO 8601 timestamp |
-| `type` | enum | `task`, `result`, `event`, `error`, `stream` |
-| `from` | string | Sender ID (`agent.*`, `human.*`, `service.*`) |
-| `to` | string | Recipient ID |
-| `intent` | string | Namespaced verb+noun (`ops.backup.status.check`) |
-| `corr` | string | Correlation ID (shared across workflow) |
-| `priority` | enum | `low`, `normal`, `high`, `urgent` |
-| `payload` | object | Intent-specific data |
+| # | Field | Req | Type | Description |
+|---|-------|-----|------|-------------|
+| 1 | `v` | ✓ | string | Protocol version (`"1"`) |
+| 2 | `id` | ✓ | string | Unique envelope ID (ULID/UUID) |
+| 3 | `ts` | ✓ | string | ISO 8601 timestamp |
+| 4 | `type` | ✓ | enum | `task \| result \| event \| error \| stream` |
+| 5 | `from` | ✓ | string | Sender ID (`agent.*`, `human.*`, `service.*`) |
+| 6 | `to` | ✓ | string | Recipient ID |
+| 7 | `intent` | ✓ | string | Namespaced action (`ops.backup.status.check`) |
+| 8 | `corr` | ✓ | string | Correlation ID (shared across workflow) |
+| 9 | `priority` | ✓ | enum | `low \| normal \| high \| urgent` |
+| 10 | `payload` | ✓ | object | Intent-specific data |
+| 11 | `reply_to` | — | string\|null | ID of envelope being replied to |
+| 12 | `trace` | — | object\|null | OpenTelemetry context |
+| 13 | `requires` | — | object\|null | Execution constraints |
+| 14 | `sig` | — | object\|string\|null | Cryptographic signature |
 
-### Optional (4)
+**10 required fields, 4 optional.** `result`/`error` types MUST have non-null `reply_to`.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `reply_to` | string/null | ID of envelope being replied to (MUST be non-null for `result`/`error`) |
-| `trace` | object/null | OpenTelemetry context (`trace_id`, `span_id`) |
-| `requires` | object/null | Constraints: `timeout_ms`, `evidence`, `human_approval`, `decision_evidence` |
-| `sig` | string/object/null | Cryptographic signature |
+## Intent Namespaces
+| Namespace | Purpose |
+|-----------|---------|
+| `aee.*` | Reserved protocol negotiation (7 seed intents) |
+| `aee.ext.*` | Extensions (e.g. `aee.ext.decision_evidence`) |
+| `ops.*`, `docs.*` | Application intents (examples) |
 
-## Envelope Types
-
-| Type | Purpose | reply_to |
-|------|---------|----------|
-| `task` | Request to do work | null |
-| `result` | Successful completion | MUST be non-null |
-| `event` | Informational signal | null |
-| `error` | Failed completion | MUST be non-null |
-| `stream` | Partial/progress update | null |
-
-## Reserved Intents (`aee.*`)
-
-Protocol negotiation only — not orchestration.
-
+### Reserved Intents (`aee.*`)
 | Intent | Purpose |
 |--------|---------|
-| `aee.status.ping` | Liveness check (responds with pong) |
+| `aee.status.ping` | Liveness check |
 | `aee.status.health` | Health/readiness status |
-| `aee.spec.query` | AEE version and capabilities |
+| `aee.spec.query` | AEE version + capabilities |
 | `aee.capability.list` | List supported intents |
 | `aee.context.fetch` | Retrieve envelope by reference |
-| `aee.context.refute` | Reject context with reason |
+| `aee.context.refute` | Reject referenced context |
 | `aee.validate.payload` | Validate payload against intent schema |
 
-## Extension Intents (`aee.ext.*`)
-
-| Intent | Purpose |
-|--------|---------|
-| `aee.ext.decision_evidence` | Structured decision evidence in result payloads |
-
-## Application Intents (Examples)
-
+### Application Intents (Examples)
 | Intent | Purpose |
 |--------|---------|
 | `ops.network.port.probe` | TCP port reachability check |
@@ -108,112 +101,80 @@ Protocol negotiation only — not orchestration.
 | `docs.summarize.with_citations` | Document summarization with sources |
 
 ## Adoption Tiers
+| Tier | Fields | Use Case |
+|------|--------|----------|
+| **MVE-Required** | All 10 required | Full AEE compliance, agent-to-agent |
+| **MVE-5** | `v`, `id`, `type`, `from`, `intent` | Logging/telemetry only (NOT compliant) |
 
-| Tier | Fields | Status |
-|------|--------|--------|
-| **MVE-Required** | 10 required fields | Schema-valid, full compliance |
-| **MVE-5** | `v`, `id`, `type`, `from`, `intent` | Log-friendly only, NOT compliant |
+## Schemas
 
-## Decision Evidence Extension
+### Envelope Schema (`schemas/aee-v1.schema.json`)
+Canonical JSON Schema for envelope validation. Validates the 10 required fields plus 4 optional. Includes conditional logic: `result`/`error` types require non-null `reply_to`.
 
-When `requires.decision_evidence` is set, result payloads include structured reasoning:
+### Decision Evidence Schema (`schemas/decision-evidence.schema.json`)
+Reusable schema fragment for structured decision evidence in result payloads (§13):
+- **Levels:** `none` | `minimal` | `standard` | `full`
+- **Fields:** `inputs_used`, `context_refs`, `tools_used`, `decision`, `reason_summary`, `action_taken`, `confidence`
 
-```json
-{
-  "decision_evidence": {
-    "inputs_used": ["..."],
-    "context_refs": ["..."],
-    "tools_used": ["..."],
-    "decision": "...",
-    "reason_summary": "...",
-    "action_taken": "...",
-    "confidence": 0.92
-  }
-}
+## Causality Model
+
+```
+human.adam                       # Human initiates
+    │ id: aaa-111
+    │ corr: xyz-789              # Correlation ID (shared)
+    ▼
+agent.router                     # Router delegates
+    │ id: bbb-222
+    │ corr: xyz-789              # Same corr
+    │ reply_to: aaa-111          # Points to predecessor
+    ▼
+agent.worker                     # Worker executes
+    │ id: ccc-333
+    │ corr: xyz-789              # Same corr
+    │ reply_to: bbb-222          # Points to predecessor
+    ▼
+result                           # Response bubbles up
+    │ id: ddd-444
+    │ corr: xyz-789              # Same corr
+    │ reply_to: ccc-333          # Traceable chain
 ```
 
-Levels: `none`, `minimal`, `standard`, `full`
-
-Schema: `schemas/decision-evidence.schema.json`
+Every hop shares `corr`. Every response carries `reply_to`. The chain is traceable from human to final result.
 
 ## Related Protocols (Quox Family)
-
 | Protocol | Role | Repo |
 |----------|------|------|
 | **AEE** | Envelope format + causality | *(this repo)* |
-| **AOCL** | Orchestration control layers | [AOCL](https://github.com/quoxai/aocl) |
-| **VOLT** | Verifiable evidence ledger | [VOLT](https://github.com/quoxai/volt) |
-| **WARD** | Content-free hash-chain witnessing | [WARD](https://github.com/quoxai/ward) |
+| **AOCL** | Orchestration control layers | [aocl](https://github.com/quoxai/aocl) |
+| **VOLT** | Verifiable evidence ledger | [volt](https://github.com/quoxai/volt) |
+| **WARD** | Content-free hash-chain witnessing | [ward](https://github.com/quoxai/ward) |
 
-## Key Concepts
+**Integration:** AOCL emits `aocl.*` as AEE envelopes; VOLT records AEE envelope events (`aee.envelope.received`, `aee.envelope.sent`); WARD witnesses AEE envelopes by ID + payload hash (content-free receipts).
 
-1. **`corr` + `reply_to`** — Every envelope in a workflow shares `corr`; responses point back via `reply_to`
-2. **Wrap-by-reference** — Use `payload.references[]` with IDs/locators, never embed full envelopes
-3. **Human symmetry** — `human.*` identifiers are first-class in `from`/`to`
-4. **Middleware wedge** — Gateway-layer injection for zero-code adoption
-5. **Type vs Intent** — `type` is envelope category (fixed set); `intent` is payload meaning (your namespace)
+## Reference SDK
 
-## Causality Flow Example
+**`@quox/aee-sdk`** (TypeScript/Node) and **`quox-aee`** (Python 3.10+) at **github.com/quoxai/aee-sdk**:
+- Zero-dependency envelope create/validate
+- Decision-evidence capture (spec §13.2)
+- Local sinks and `aee-validate` CLI
+- Both packages validate against `schemas/aee-v1.schema.json`
 
-```
-human.adam                       # A human starts a task
-    │
-    │ id: aaa-111
-    │ corr: xyz-789
-    │ intent: backup.check
-    ▼
-agent.router                     # Router delegates
-    │
-    │ id: bbb-222
-    │ corr: xyz-789              # same corr
-    │ reply_to: aaa-111          # points back
-    ▼
-agent.worker                     # Worker does the job
-    │
-    │ id: ccc-333
-    │ corr: xyz-789              # same corr
-    │ reply_to: bbb-222          # points back
-    ▼
-result                           # Response bubbles up
-    │
-    │ id: ddd-444
-    │ corr: xyz-789              # same corr
-    │ reply_to: ccc-333          # traceable chain
-    ▼
-human.adam sees the result
-```
+SDK repo opens at launch with npm/PyPI publishes.
 
-## Companion Protocols Integration
+## Invariants
+| Check | Status |
+|-------|--------|
+| Version `v` = `"1"` across spec, schemas, AI_README.json | ✓ pass |
+| Schema validity (`aee-v1.schema.json`, `decision-evidence.schema.json`) | ✓ pass |
+| Envelope field count (10 + 4 = 14) | ✓ pass |
+| Examples present (`examples/handshake.md`) | ✓ pass |
+| IETF draft reference consistent | ✓ pass |
 
-- **AOCL** emits `aocl.*` intents as AEE envelopes — no AEE changes needed
-- **VOLT** records AEE envelope events (`aee.envelope.received`, `aee.envelope.sent`) in tamper-evident traces
-- **WARD** witnesses AEE envelopes by ID and payload hash — content-free receipts, failures never affect AEE transport
+## No Code — Spec Only
 
-## JSON Schema
-
-The envelope schema (`aee-v1.schema.json`) is embedded in `aee.md` Section 6. Key validation rules:
-
-- 10 required fields must exist
-- `type` must be one of: `task`, `result`, `event`, `error`, `stream`
-- `reply_to` MUST be non-null for `result` and `error` types
-- Unknown fields MUST be ignored (forward compatibility)
-
-## Entry Points
-
-| Task | File |
-|------|------|
-| First envelope | `quickstart.md` |
-| Full spec | `aee.md` |
-| Intent schemas | `intents.md` |
-| Machine-readable | `AI_README.json` |
-| Capability discovery | `examples/handshake.md` |
-| Protocol positioning | `relationship-to-mcp-acp.md` |
-
-## No Implementation Code
-
-This repository is **specification only**:
-- Protocol documentation (Markdown)
-- JSON Schema fragments
+This repo contains **no executable code**. It is a protocol specification with:
+- Markdown documentation
+- JSON schemas
 - Example envelopes
 
-No validators, SDKs, or runtime code.
+Implementations live in consuming repos (quox-dashboard, QuoxBastion, quoxflow, aee-sdk, etc.).
