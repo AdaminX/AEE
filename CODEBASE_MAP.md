@@ -1,4 +1,4 @@
-<!-- Regenerated: 2026-07-27T15:30Z by codebase-mirror scan (verified) -->
+<!-- Regenerated: 2026-08-11 by codebase-mirror scan (verified) -->
 
 # AEE — Codebase Map
 
@@ -19,17 +19,17 @@
 
 ```
 aee/
-├── README.md                  # Overview, examples, quick reference (335 lines)
-├── aee.md                     # Full specification (490 lines)
-├── intents.md                 # Intent registry + payload schemas (502 lines)
-├── quickstart.md              # 5-minute getting started guide (116 lines)
-├── relationship-to-mcp-acp.md # Protocol layer comparison (83 lines)
-├── AI_README.json             # Self-describing AEE envelope for AI agents (221 lines)
-├── CHANGELOG.md               # Version history (37 lines)
+├── README.md                  # Overview, examples, quick reference (334 lines)
+├── aee.md                     # Full specification (489 lines)
+├── intents.md                 # Intent registry + payload schemas (501 lines)
+├── quickstart.md              # 5-minute getting started guide (115 lines)
+├── relationship-to-mcp-acp.md # Protocol layer comparison (82 lines)
+├── AI_README.json             # Self-describing AEE envelope for AI agents (220 lines)
+├── CHANGELOG.md               # Version history (36 lines)
 ├── LICENSE                    # MIT license
 ├── CODEBASE_MAP.md            # This file
 ├── examples/
-│   └── handshake.md           # Capability discovery examples (133 lines)
+│   └── handshake.md           # Capability discovery examples (132 lines)
 ├── schemas/
 │   ├── aee-v1.schema.json            # Canonical envelope JSON Schema (37 lines)
 │   └── decision-evidence.schema.json # Decision evidence fragment schema (43 lines)
@@ -44,14 +44,14 @@ aee/
 ## Authoritative Files
 | File | Purpose |
 |------|---------|
-| `aee.md` | Full normative spec (14 fields, validity rules, JSON Schema inline in §6) |
+| `aee.md` | Full normative spec (14 fields, validity rules, JSON Schema inline in §6, decision evidence in §13) |
 | `schemas/aee-v1.schema.json` | Canonical machine-readable envelope schema (extracted from §6) |
 | `intents.md` | Intent registry (`aee.*`, `aee.ext.*`, `ops.*`, `docs.*`) |
 | `AI_README.json` | Machine-readable spec (itself a valid AEE envelope) |
 | `schemas/decision-evidence.schema.json` | JSON Schema for decision evidence (§13) |
-| `examples/handshake.md` | Capability discovery example |
+| `examples/handshake.md` | Capability discovery example (`aee.capability.list`, `aee.spec.query`) |
 | `quickstart.md` | Emit your first envelope in 5 minutes |
-| `relationship-to-mcp-acp.md` | Protocol layer comparison (MCP, ACP, AEE) |
+| `relationship-to-mcp-acp.md` | Protocol layer comparison (MCP, ACP, AEE) + middleware adoption strategy |
 
 ## Envelope Fields (14)
 
@@ -72,14 +72,14 @@ aee/
 | 13 | `requires` | — | object\|null | Execution constraints |
 | 14 | `sig` | — | object\|string\|null | Cryptographic signature |
 
-**10 required fields, 4 optional.** `result`/`error` types MUST have non-null `reply_to`.
+**10 required fields, 4 optional.** `result`/`error` types MUST have non-null `reply_to` (enforced via `allOf` conditional in schema).
 
 ## Intent Namespaces
 | Namespace | Purpose |
 |-----------|---------|
 | `aee.*` | Reserved protocol negotiation (7 seed intents) |
 | `aee.ext.*` | Extensions (e.g. `aee.ext.decision_evidence`) |
-| `ops.*`, `docs.*` | Application intents (examples) |
+| `ops.*`, `docs.*` | Application intents (3 worked examples) |
 
 ### Reserved Intents (`aee.*`)
 | Intent | Purpose |
@@ -108,11 +108,11 @@ aee/
 ## Schemas
 
 ### Envelope Schema (`schemas/aee-v1.schema.json`)
-Canonical JSON Schema for envelope validation. Validates the 10 required fields plus 4 optional. Includes conditional logic: `result`/`error` types require non-null `reply_to`.
+Canonical JSON Schema (draft 2020-12) for envelope validation. Validates the 10 required fields plus 4 optional. Includes conditional logic: `result`/`error` types require non-null `reply_to`.
 
 ### Decision Evidence Schema (`schemas/decision-evidence.schema.json`)
 Reusable schema fragment for structured decision evidence in result payloads (§13):
-- **Levels:** `none` | `minimal` | `standard` | `full`
+- **Levels (per `requires.decision_evidence`):** `none` | `minimal` | `standard` | `full`
 - **Fields:** `inputs_used`, `context_refs`, `tools_used`, `decision`, `reason_summary`, `action_taken`, `confidence`
 
 ## Causality Model
@@ -158,7 +158,7 @@ Every hop shares `corr`. Every response carries `reply_to`. The chain is traceab
 - Local sinks and `aee-validate` CLI
 - Both packages validate against `schemas/aee-v1.schema.json`
 
-SDK repo opens at launch with npm/PyPI publishes.
+SDK repo is private today, opening at launch with npm/PyPI publishes.
 
 ## Invariants
 | Check | Status |
@@ -171,7 +171,7 @@ SDK repo opens at launch with npm/PyPI publishes.
 
 ## No Code — Spec Only
 
-This repo contains **no executable code**. It is a protocol specification with:
+This repo contains **no executable code**: no package.json, no entry points, no API routes, no test suite. It is a protocol specification with:
 - Markdown documentation
 - JSON schemas
 - Example envelopes
