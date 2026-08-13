@@ -1,4 +1,4 @@
-<!-- Regenerated: 2026-08-11 by codebase-mirror scan (verified) -->
+<!-- Regenerated: 2026-08-13 by codebase-mirror scan (verified) -->
 
 # AEE Codebase Map
 
