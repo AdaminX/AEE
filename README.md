@@ -1,21 +1,28 @@
-# AEE — Agent Envelope Exchange
+# AEE: Agent Envelope Exchange
 
-> **Status:** Experimental — Open for Feedback
+> **Status:** Experimental, open for feedback
 > **Version:** 1
 > **License:** MIT
 
-**IETF Internet-Draft:** [`draft-cowles-aee-00`](https://datatracker.ietf.org/doc/draft-cowles-aee/)
+**IETF Internet-Draft:** [`draft-cowles-aee`](https://datatracker.ietf.org/doc/draft-cowles-aee/)
 
-**AEE is a format for agents talking to agents—with humans in the loop.**
+## The short version
 
-Born as an efficiency choice: if AIs picked how to exchange work, they'd choose rigid, minimal, unambiguous. A small envelope carrying *who asked*, *what they want*, *how replies connect*.
+- **What:** a 14-field JSON envelope that every agent message travels in, whatever framework built the agent.
+- **Who:** anyone wiring two or more AI agents together, or debugging why a fleet of them did something odd.
+- **Why:** every agent framework invented its own message shape, so nothing interoperates and nothing is traceable end to end.
+- **How:** each message carries who sent it, who it is for, what they want, and two IDs that stitch the whole conversation into one traceable chain.
 
-### Why AIs Like It
+**AEE is a format for agents talking to agents, with humans in the loop.**
 
-- **Fixed structure** → No negotiation, just parse
-- **Explicit causality** → `corr` + `reply_to` link every hop
-- **No nesting** → Flat is fast
-- **No hidden state** → Everything survives the wire
+Born as an efficiency choice: if AIs picked how to exchange work, they would choose rigid, minimal, unambiguous. A small envelope carrying *who asked*, *what they want*, *how replies connect*.
+
+### Why AIs like it
+
+- **Fixed structure**: no negotiation, just parse
+- **Explicit causality**: `corr` and `reply_to` link every hop
+- **No nesting**: flat is fast
+- **No hidden state**: everything survives the wire
 
 Humans benefit because machines are explicit. If agents can reason about it, you can debug it.
 
@@ -53,11 +60,11 @@ Every hop shares `corr`. Every response carries `reply_to`. The chain is traceab
 
 ### Mental Model
 
-- **AEE is like HTTP headers** — it standardizes the envelope, not the content
-- **AEE is not orchestration** — it doesn't schedule, retry, or route
-- **AEE is not a runtime** — it doesn't execute anything
-- **AEE is not a framework** — it doesn't care how your agents are built
-- **AEE is just structure** — 14 fields that make causality explicit
+- **AEE is like HTTP headers**: it standardizes the envelope, not the content
+- **AEE is not orchestration**: it does not schedule, retry, or route
+- **AEE is not a runtime**: it does not execute anything
+- **AEE is not a framework**: it does not care how your agents are built
+- **AEE is just structure**: 14 fields that make causality explicit
 
 ### `type` vs `intent`
 
@@ -112,9 +119,9 @@ Two envelopes. Same `corr`. The `result` points back with `reply_to`.
 }
 ```
 
-> `human.adam → agent.router → agent.worker → result` — same `corr`, `reply_to` bubbles back
+> `human.adam → agent.router → agent.worker → result`: same `corr`, `reply_to` bubbles back
 
-> **AEE exists because agents hate ambiguity** — fixed envelope, computable causality, fewer tokens.
+> **AEE exists because agents hate ambiguity**: fixed envelope, computable causality, fewer tokens.
 
 > If an agent can parse it, a human can grep it.
 
@@ -122,19 +129,19 @@ Two envelopes. Same `corr`. The `result` points back with `reply_to`.
 
 ## What an Agent Sees
 
-**Without AEE** — ambiguous, unrecoverable:
+**Without AEE**, ambiguous and unrecoverable:
 
 ```
 {"task": "check backup", "from": "someone", "data": {...}}
 ```
 
 What's missing:
-- **No `corr`** → Cannot link to workflow. If this fails, no retry context.
-- **No `reply_to`** → Cannot trace what triggered this. Causality is lost.
-- **No `intent`** → Must infer meaning from payload. Fragile.
-- **No `to`** → Broadcast? Direct? Unknown.
+- **No `corr`**: cannot link to a workflow. If this fails, there is no retry context.
+- **No `reply_to`**: cannot trace what triggered this. Causality is lost.
+- **No `intent`**: meaning must be inferred from the payload. Fragile.
+- **No `to`**: broadcast? Direct? Unknown.
 
-**With AEE** — structured, recoverable:
+**With AEE**, structured and recoverable:
 
 ```
 {"from": "agent.router", "to": "agent.worker", "corr": "xyz-789", "reply_to": "bbb-222", "intent": "backup.check", ...}
@@ -146,7 +153,7 @@ Every field answers a question. No inference required.
 
 ## What an LLM Actually Processes
 
-**Free-form prompt** — variable structure, implicit context:
+**Free-form prompt**, variable structure and implicit context:
 
 ```
 "Please check the backup status. This is from the router.
@@ -159,7 +166,7 @@ The LLM must:
 - Guess at correlation
 - Hope the context survives
 
-**AEE envelope** — fixed structure, explicit context:
+**AEE envelope**, fixed structure and explicit context:
 
 ```json
 {"from": "agent.router", "to": "agent.worker", "intent": "backup.check", "corr": "xyz-789", "reply_to": "bbb-222"}
@@ -177,19 +184,19 @@ The LLM (or any parser):
 
 ## Is This For You?
 
-- **If you debug agent workflows** → AEE gives you a correlation ID that survives every hop.
-- **If you run an LLM gateway** → AEE gives you structured logs you can actually query.
-- **If you need audit trails** → AEE tells you who started what, and how it got here.
-- **If you're a human in the loop** → AEE proves you approved that thing you approved.
-- **If you integrate multiple frameworks** → AEE gives them a common envelope without forcing a common runtime.
+- **If you debug agent workflows**: AEE gives you a correlation ID that survives every hop.
+- **If you run an LLM gateway**: AEE gives you structured logs you can actually query.
+- **If you need audit trails**: AEE tells you who started what, and how it got here.
+- **If you are a human in the loop**: AEE proves you approved that thing you approved.
+- **If you integrate multiple frameworks**: AEE gives them a common envelope without forcing a common runtime.
 
 ---
 
 ## Get Started
 
-**→ [Quickstart](quickstart.md)** — Emit your first envelope in 5 minutes. No spec reading required.
+**[Quickstart](quickstart.md)**: Emit your first envelope in 5 minutes. No spec reading required.
 
-**→ [Protocol Handshake](examples/handshake.md)** — How agents discover supported intents (discovery, not orchestration).
+**[Protocol Handshake](examples/handshake.md)**: How agents discover supported intents (discovery, not orchestration).
 
 ---
 
@@ -199,12 +206,12 @@ Modern agent systems face a common problem: **agents built with different framew
 
 **AEE solves this by standardizing the envelope, not the agent.**
 
-- ✅ **Portable** — Works across LangGraph, AutoGen, CrewAI, or custom frameworks
-- ✅ **Observable** — Built-in correlation IDs and tracing hooks
-- ✅ **Extensible** — Intent-specific schemas live outside the envelope
-- ✅ **Human-debuggable** — Readable JSON with clear semantics
-- ✅ **Transport-agnostic** — Use HTTP, WebSocket, NATS, Kafka, or any channel
-- ✅ **Incremental adoption** — Start with 5-field MVE, grow as needed
+- **Portable**: works across LangGraph, AutoGen, CrewAI, or custom frameworks
+- **Observable**: built-in correlation IDs and tracing hooks
+- **Extensible**: intent-specific schemas live outside the envelope
+- **Human-debuggable**: readable JSON with clear semantics
+- **Transport-agnostic**: use HTTP, WebSocket, NATS, Kafka, or any channel
+- **Incremental adoption**: start with a 5-field MVE, grow as needed
 
 AEE defines **how agents exchange messages**, not how they are built, scheduled, or run.
 
@@ -212,20 +219,20 @@ AEE defines **how agents exchange messages**, not how they are built, scheduled,
 
 An AEE message is a **14-field JSON envelope** containing:
 
-- **Identity** — `from`, `to` (who's talking)
-- **Intent** — `intent` (what they want to do)
-- **Correlation** — `corr`, `reply_to` (threading and replies)
-- **Tracing** — `trace` (observability hooks)
-- **Constraints** — `requires` (timeouts, approvals, evidence)
-- **Payload** — `payload` (intent-specific data)
+- **Identity**: `from`, `to` (who's talking)
+- **Intent**: `intent` (what they want to do)
+- **Correlation**: `corr`, `reply_to` (threading and replies)
+- **Tracing**: `trace` (observability hooks)
+- **Constraints**: `requires` (timeouts, approvals, evidence)
+- **Payload**: `payload` (intent-specific data)
 
 The envelope stays stable. The **meaning** comes from intent-specific schemas published by communities.
 
 ## Adoption Path
 
-- **[MVE (Minimal Viable Envelope)](aee.md#10-adoption-tiers)** — Start with 5 fields for logging, or 10 for full compliance
-- **[Reserved `aee.*` intents](intents.md#reserved-protocol-intents-aee)** — Protocol negotiation without custom integration
-- **[Middleware wedge](relationship-to-mcp-acp.md#middleware-adoption-strategy)** — Auto-wrap LLM calls at the gateway layer
+- **[MVE (Minimal Viable Envelope)](aee.md#10-adoption-tiers)**: Start with 5 fields for logging, or 10 for full compliance
+- **[Reserved `aee.*` intents](intents.md#reserved-protocol-intents-aee)**: Protocol negotiation without custom integration
+- **[Middleware wedge](relationship-to-mcp-acp.md#middleware-adoption-strategy)**: Auto-wrap LLM calls at the gateway layer
 
 ## Quick Example
 
@@ -278,9 +285,9 @@ The envelope stays stable. The **meaning** comes from intent-specific schemas pu
 
 ## Documentation
 
-- **[aee.md](aee.md)** — Full specification with envelope schema and validation rules
-- **[intents.md](intents.md)** — Starter intent registry with example schemas
-- **[relationship-to-mcp-acp.md](relationship-to-mcp-acp.md)** — How AEE relates to MCP and ACP
+- **[aee.md](aee.md)**: Full specification with envelope schema and validation rules
+- **[intents.md](intents.md)**: Starter intent registry with example schemas
+- **[relationship-to-mcp-acp.md](relationship-to-mcp-acp.md)**: How AEE relates to MCP and ACP
 
 ## Reference SDK
 
@@ -312,7 +319,7 @@ AEE is experimental and open for feedback. If you're building agent systems and 
 
 ## Related Protocols
 
-AEE is part of the **Quox protocol family** — four complementary specs that together provide messaging, control, evidence, and witnessing for agentic systems:
+AEE is part of the **Quox protocol family**: four complementary specs that together provide messaging, control, evidence, and witnessing for agentic systems:
 
 | Protocol | Role | Repo |
 |----------|------|------|
@@ -322,10 +329,10 @@ AEE is part of the **Quox protocol family** — four complementary specs that to
 | **WARD** | Content-free hash-chain witnessing + external anchoring | [WARD](https://github.com/quoxai/ward) |
 
 **How they connect:**
-- AEE envelopes carry `corr` and `reply_to` — AOCL uses these for layer-level audit, VOLT uses them as `correlation_id` for evidence chains.
-- AOCL emits `aocl.*` intents as AEE envelopes — no AEE spec changes needed.
+- AEE envelopes carry `corr` and `reply_to`: AOCL uses these for layer-level audit, VOLT uses them as `correlation_id` for evidence chains.
+- AOCL emits `aocl.*` intents as AEE envelopes: no AEE spec changes needed.
 - VOLT records AEE envelope events (`aee.envelope.received`, `aee.envelope.sent`) as part of its tamper-evident trace.
-- WARD witnesses AEE envelopes by ID and payload hash — producing content-free receipts without storing envelope content. WARD failures never affect AEE transport.
+- WARD witnesses AEE envelopes by ID and payload hash: producing content-free receipts without storing envelope content. WARD failures never affect AEE transport.
 
 Each protocol is independently useful. Together they provide **observable, controllable, provable, witnessed** agent operations.
 
