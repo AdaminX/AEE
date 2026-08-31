@@ -1,8 +1,8 @@
-<!-- Regenerated: 2026-08-15 by codebase-mirror scan (verified) -->
+<!-- Regenerated: 2026-08-11 by scan (verified) -->
 
-# AEE Codebase Map
+# AEE: Codebase Map
 
-**Agent Envelope Exchange (AEE)** is a 14-field JSON envelope format for agent-to-agent communication with explicit causality. It standardizes the *envelope*, not the agent. Part of the Quox protocol family (AEE, AOCL, VOLT, WARD). Specification only, no runtime or validator code lives here.
+**Agent Envelope Exchange (AEE)**: A 14-field JSON envelope format for agent-to-agent communication with explicit causality. Standardizes the *envelope*, not the agent. Part of the Quox protocol family (AEE, AOCL, VOLT, WARD). Specification only, no runtime/validator code.
 
 ## Metrics
 | Metric | Value |
@@ -10,10 +10,10 @@
 | Protocol Version | **1** |
 | Schema files | 2 |
 | Example files | 1 |
-| Spec docs (Markdown) | 8 |
+| Spec docs (Markdown) | 7 |
 | IETF Draft | `draft-cowles-aee-00` |
 | License | MIT |
-| Status | Experimental, open for feedback |
+| Status | Experimental |
 
 ## Directory Structure
 
@@ -34,8 +34,8 @@ aee/
 │   ├── aee-v1.schema.json            # Canonical envelope JSON Schema (37 lines)
 │   └── decision-evidence.schema.json # Decision evidence fragment schema (43 lines)
 └── .github/
-    ├── CODEOWNERS             # @quoxai
     ├── pull_request_template.md
+    ├── CODEOWNERS
     └── ISSUE_TEMPLATE/
         ├── feature.md
         └── bug.md
@@ -44,42 +44,42 @@ aee/
 ## Authoritative Files
 | File | Purpose |
 |------|---------|
-| `aee.md` | Full normative spec (14 fields, validity rules, JSON Schema inline in §6, decision evidence in §13) |
-| `schemas/aee-v1.schema.json` | Canonical machine-readable envelope schema (extracted from §6) |
+| `aee.md` | Full normative spec (14 fields, validity rules, JSON Schema inline in section 6) |
+| `schemas/aee-v1.schema.json` | Canonical machine-readable envelope schema (extracted from section 6) |
 | `intents.md` | Intent registry (`aee.*`, `aee.ext.*`, `ops.*`, `docs.*`) |
-| `AI_README.json` | Machine-readable spec (itself a valid AEE envelope, intent `aee.protocol.explainer`) |
-| `schemas/decision-evidence.schema.json` | JSON Schema for decision evidence (§13) |
-| `examples/handshake.md` | Capability discovery example (`aee.capability.list`, `aee.spec.query`) |
+| `AI_README.json` | Machine-readable spec (itself a valid AEE envelope) |
+| `schemas/decision-evidence.schema.json` | JSON Schema for decision evidence (section 13) |
+| `examples/handshake.md` | Capability discovery example |
 | `quickstart.md` | Emit your first envelope in 5 minutes |
-| `relationship-to-mcp-acp.md` | Protocol layer comparison (MCP, ACP, AEE) + middleware adoption strategy |
+| `relationship-to-mcp-acp.md` | Protocol layer comparison (MCP, ACP, AEE) |
 
 ## Envelope Fields (14)
 
 | # | Field | Req | Type | Description |
 |---|-------|-----|------|-------------|
-| 1 | `v` | ✓ | string | Protocol version (`"1"`) |
-| 2 | `id` | ✓ | string | Unique envelope ID (ULID/UUID) |
-| 3 | `ts` | ✓ | string | ISO 8601 timestamp |
-| 4 | `type` | ✓ | enum | `task \| result \| event \| error \| stream` |
-| 5 | `from` | ✓ | string | Sender ID (`agent.*`, `human.*`, `service.*`) |
-| 6 | `to` | ✓ | string | Recipient ID |
-| 7 | `intent` | ✓ | string | Namespaced action (`ops.backup.status.check`) |
-| 8 | `corr` | ✓ | string | Correlation ID (shared across workflow) |
-| 9 | `priority` | ✓ | enum | `low \| normal \| high \| urgent` |
-| 10 | `payload` | ✓ | object | Intent-specific data |
-| 11 | `reply_to` | opt | string\|null | ID of envelope being replied to |
-| 12 | `trace` | opt | object\|null | OpenTelemetry context |
-| 13 | `requires` | opt | object\|null | Execution constraints |
-| 14 | `sig` | opt | object\|string\|null | Cryptographic signature |
+| 1 | `v` | Y | string | Protocol version (`"1"`) |
+| 2 | `id` | Y | string | Unique envelope ID (ULID/UUID) |
+| 3 | `ts` | Y | string | ISO 8601 timestamp |
+| 4 | `type` | Y | enum | `task \| result \| event \| error \| stream` |
+| 5 | `from` | Y | string | Sender ID (`agent.*`, `human.*`, `service.*`) |
+| 6 | `to` | Y | string | Recipient ID |
+| 7 | `intent` | Y | string | Namespaced action (`ops.backup.status.check`) |
+| 8 | `corr` | Y | string | Correlation ID (shared across workflow) |
+| 9 | `priority` | Y | enum | `low \| normal \| high \| urgent` |
+| 10 | `payload` | Y | object | Intent-specific data |
+| 11 | `reply_to` | — | string\|null | ID of envelope being replied to |
+| 12 | `trace` | — | object\|null | OpenTelemetry context |
+| 13 | `requires` | — | object\|null | Execution constraints |
+| 14 | `sig` | — | object\|string\|null | Cryptographic signature |
 
-**10 required fields, 4 optional.** `result`/`error` types MUST have non-null `reply_to` (enforced via `allOf` conditional in the schema). Errata: `reply_to` is RECOMMENDED-always; emit `null` where no causal predecessor exists.
+**10 required fields, 4 optional.** `result`/`error` types MUST have non-null `reply_to`.
 
 ## Intent Namespaces
 | Namespace | Purpose |
 |-----------|---------|
 | `aee.*` | Reserved protocol negotiation (7 seed intents) |
 | `aee.ext.*` | Extensions (e.g. `aee.ext.decision_evidence`) |
-| `ops.*`, `docs.*` | Application intents (3 worked examples) |
+| `ops.*`, `docs.*` | Application intents (examples) |
 
 ### Reserved Intents (`aee.*`)
 | Intent | Purpose |
@@ -99,8 +99,6 @@ aee/
 | `ops.backup.status.check` | Backup job status |
 | `docs.summarize.with_citations` | Document summarization with sources |
 
-Each application intent ships task, result, and error payload schemas in `intents.md`.
-
 ## Adoption Tiers
 | Tier | Fields | Use Case |
 |------|--------|----------|
@@ -110,11 +108,11 @@ Each application intent ships task, result, and error payload schemas in `intent
 ## Schemas
 
 ### Envelope Schema (`schemas/aee-v1.schema.json`)
-Canonical JSON Schema (draft 2020-12) for envelope validation. Validates the 10 required fields plus 4 optional. Includes conditional logic: `result`/`error` types require non-null `reply_to`.
+Canonical JSON Schema for envelope validation. Validates the 10 required fields plus 4 optional. Includes conditional logic: `result`/`error` types require non-null `reply_to`.
 
 ### Decision Evidence Schema (`schemas/decision-evidence.schema.json`)
-Reusable schema fragment for structured decision evidence in result payloads (§13):
-- **Levels (per `requires.decision_evidence`):** `none` | `minimal` | `standard` | `full`
+Reusable schema fragment for structured decision evidence in result payloads (section 13):
+- **Levels:** `none` | `minimal` | `standard` | `full`
 - **Fields:** `inputs_used`, `context_refs`, `tools_used`, `decision`, `reason_summary`, `action_taken`, `confidence`
 
 ## Causality Model
@@ -156,24 +154,24 @@ Every hop shares `corr`. Every response carries `reply_to`. The chain is traceab
 
 **`@quox/aee-sdk`** (TypeScript/Node) and **`quox-aee`** (Python 3.10+) at **github.com/quoxai/aee-sdk**:
 - Zero-dependency envelope create/validate
-- Decision-evidence capture (spec §13.2)
+- Decision-evidence capture (spec section 13.2)
 - Local sinks and `aee-validate` CLI
 - Both packages validate against `schemas/aee-v1.schema.json`
 
-SDK repo is private today, opening at launch with npm/PyPI publishes.
+SDK repo opens at launch with npm/PyPI publishes.
 
 ## Invariants
 | Check | Status |
 |-------|--------|
-| Version `v` = `"1"` across spec, schemas, AI_README.json | ✓ pass |
-| Schema validity (`aee-v1.schema.json`, `decision-evidence.schema.json`) | ✓ pass |
-| Envelope field count (10 + 4 = 14) | ✓ pass |
-| Examples present (`examples/handshake.md`) | ✓ pass |
-| IETF draft reference consistent | ✓ pass |
+| Version `v` = `"1"` across spec, schemas, AI_README.json | pass |
+| Schema validity (`aee-v1.schema.json`, `decision-evidence.schema.json`) | pass |
+| Envelope field count (10 + 4 = 14) | pass |
+| Examples present (`examples/handshake.md`) | pass |
+| IETF draft reference consistent | pass |
 
-## No Code, Spec Only
+## No Code: Spec Only
 
-This repo contains **no executable code**: no package.json, no entry points, no API routes, no test suite. It is a protocol specification with:
+This repo contains **no executable code**. It is a protocol specification with:
 - Markdown documentation
 - JSON schemas
 - Example envelopes
